@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block pagetitle %}URL Shortener{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<p>Showing URLs for account: {{ user.username }}.</p>
+{% endif %}
+
+{% if error %}
+<p class="error">Error: {{ error }}</p>
+{% endif %}
+
+{% if deleted_url %}
+<p class="error">Successfully deleted {{ deleted_url }}</p>
+{% endif %}
+
+<table class="urls">
+    <tr>
+        <th>Short URL</th>
+        <th>Directs to</th>
+        <th>Total hits</th>
+        <th></th>
+    </tr>
+    <form action="{% url "urls:index" %}" method="POST">
+    {% csrf_token %}
+    </tr>
+        <td><input type="text" name="short_url" value="{{ generated_url }}" pattern="[a-zA-Z0-9_]+" title="Use only letters, numbers and underscores." required/></td>
+        <td><input type="text" name="long_url" placeholder="destination url" pattern="[^ ]+" title="Do not use spaces." required/></td>
+        <td>0</td>
+        <td><button class="icon-plus" type="submit"/></td>
+    </tr>
+    </form>
+{% for url in user_urls %}
+    <tr>
+        <td><a class="link" href="/{{ url.short_url }}">/{{ url.short_url }}</a></td>
+        <td title="{{ url.long_url }}">{{ url.redirect_to }}</td>
+        <td>{{ url.redirects }}</td>
+        <td><a class="icon-bin link" href="{% url "urls:remove" url.short_url %}"></a></td>
+    </tr>
+{% endfor %}
+</table>
+{% endblock %}

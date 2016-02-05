@@ -1,0 +1,39 @@
+<!DOCYPE html>
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static "style.css" %}" />
+    <link rel="stylesheet" href="https://i.icomoon.io/public/temp/badddff741/UntitledProject/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <script>
+        function toggleMenu() { 
+            if (document.getElementById("burger").getAttribute("data-showmenu") == "false") {
+                document.getElementById("nav").setAttribute("data-showmenu", "true");
+                document.getElementById("burger").setAttribute("data-showmenu", "true");
+            } else {
+                document.getElementById("nav").setAttribute("data-showmenu", "false");
+                document.getElementById("burger").setAttribute("data-showmenu", "false");
+            }
+        }
+    </script>
+</head>
+<body>
+    <header onclick="toggleMenu()">
+        <span id="burger" class="menu-icon" data-showmenu="false"></span>
+        <ul id="nav" data-showmenu="false">
+            <li><a class="navb" href="{% url "home:index" %}">Home</a></li>
+            <li><a class="navb" href="{% url "home:about" %}">About</a></li>
+            <li><a class="navb" href="{% url "home:projects" %}">Projects</a></li>
+            <li><a class="navb" href="{% url "urls:index" %}">URLs</a></li>
+            {% if user.is_superuser %}<li><a class="navb" href="/admin/">Admin</a></li>{% endif %}
+        </ul>
+        {% if user.is_authenticated %}<a class="navlog logout" href="{% url "logout" %}" title="Log out">{{ user.username }}</a>
+        {% else %}<a class="navlog login" href="{% url "login" %}">Log in</a>{% endif %}
+    </header>
+    
+    <div class="content">
+        <h4 onclick="toggleMenu()">{% block pagetitle %}{% endblock %}</h4>
+        {% block content %}{% endblock %}
+    </div>
+</body>
